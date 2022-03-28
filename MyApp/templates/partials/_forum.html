@@ -1,0 +1,32 @@
+{% load static %}
+<div id="forum-{{ forum.id }}" class="forum">
+    {% if forum.image %}
+    <div class="forum--main--image">
+        <a href="{% url 'Forum:forum_detail' forum.id %}">
+            <img src="{{ forum.image.url }}" alt="{{ forum.title }}">
+        </a>
+    </div>
+    {% endif %}
+    <div class="forum--title">
+        <p>
+            {{ forum.title }}
+        </p>
+    </div>
+    <div class="forum--summary">
+        <div class="forum--vote enlarge--text">
+            <a role="button" title="upvote" class="clear--button" onclick="vote(this, {{ forum.id }})">
+                <i class="uil uil-arrow-up"></i>
+            </a>
+            <div class="forum--summary--information" id="forum--score--{{ forum.id }}">
+                {% if forum.get_score %}{{ forum.get_score }}{% else %}0{% endif %}
+            </div>
+            <a role="button" title="downvote" class="clear--button" onclick="vote(this, {{ forum.id }})">
+                <i class="uil uil-arrow-down"></i>
+            </a>
+        </div>
+        <div class="forum--summary--information enlarge--text">
+            <i class="uil uil-comments-alt"></i>
+            {% if forum.comment_set.count %}{{ forum.comment_set.count }}{% else %}0{% endif %}
+        </div>
+    </div>
+</div>

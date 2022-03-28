@@ -1,0 +1,142 @@
+{% extends "template.html" %}
+{% load static %}
+
+{% block content %}
+<div class="form--heading">
+    <a role="button" class="clear--button heading" id="hide">Have ideas for a Forum? Post here!</a>
+</div>
+
+<div class="main--page--form" id="form--hidden" hidden>
+    <form id="forum_create" action="" method='post' enctype='multipart/form-data' novalidate>
+        {% csrf_token %}
+        <div class="form-information">
+            <label for="title">Title:</label>
+            {{ form.title }}
+        </div>
+        <!--
+        <div class="form-information">
+            <label for="hashtag">Hashtags:</label>
+            {{ form.hashtag }}
+        </div>
+        -->
+        <div class="form-information">
+            <label for="text">Text:</label>
+            <textarea id="text" name="text" maxlength="2000"></textarea>
+        </div>
+        <div class="form-information">
+            <label for="name">Username:</label>
+            <input id="name" name="name" maxlength="2000" placeholder="Optional"/>
+        </div>
+        <div class="form-information">
+            <label for="image">Image:</label>
+            {{ form.image }}
+        </div>
+        <div class="form-information">
+            <label for="embed_video" >Video:</label>
+            <input id="embed_video" name="embed_video" maxlength="2000" placeholder="Optional"/>
+        </div>
+        <input type="hidden" id="latitude" name="latitude" value="">
+        <input type="hidden" id="longitude" name="longitude" value="">
+        <button type="submit" class="btn btn-primary form__submit">post</button>
+    </form>
+</div>
+
+<div id="forums" class="home--page">
+    {% if forum_list %}
+        {% for forum in forum_list %}
+            {% if forum %}
+                {% include 'partials/_forum.html' %}
+            {% endif %}
+        {% endfor %}
+        {% for forum in forum_list_two %}
+            {% if forum %}
+                {% include 'partials/_forum.html' %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div id="no--forums" class="form--heading">
+            <p>There have been no forums created in your area. Be the first!</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+let options = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 5
+};
+
+function success(pos) {
+  let crd = pos.coords;
+
+   $('#longitude').val(crd.latitude.toFixed(6));
+   $('#latitude').val(crd.longitude.toFixed(6));
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+navigator.geolocation.getCurrentPosition(success, error, options);
+
+$('#forum_create').on('submit', function(event){
+    event.preventDefault();
+    let form = $('#forum_create')[0];
+    let data = new FormData(form);
+    data.append("biri_key", visitorId);
+
+    $.ajax({
+    url: "{% url 'Forum:forum' %}",
+    data: data,
+    type: 'POST',
+    contentType: false,
+    processData: false,
+    success: function (data) {
+        // insert new forum at the top
+        const div = document.getElementById('forums');
+        div.insertAdjacentHTML('afterbegin', data);
+
+        // reset and hide the forum form
+        $("#forum_create").trigger("reset");
+        $("#form--hidden").toggle();
+        $("#no--forums").remove();
+        },
+        error: function() {
+            console.log("An error occured when submitting the form");
+        }
+    });
+});
+
+function vote(type, id) {
+    let vote = $(type).attr("title");
+
+    $.ajax({
+    url: id + "/vote",
+    data: { 'csrfmiddlewaretoken' : '{{ csrf_token }}',vote: vote, fingerprint: visitorId},
+    type: 'POST',
+    success: function (data) {
+        change_class_vote(type, '.forum--vote', data);
+
+        fetch(id + "/vote", {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            }
+            })
+            .then(response => response.json())
+            .then(data => {
+                $("#forum--score--" + id).html(data['score']);
+            })},
+        error: function() {
+            console.log('vote failure');
+        }
+    });
+}
+
+visitorId = ""
+window.onload = (event) => {
+    start();
+};
+</script>
+{% endblock %}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--==================== UNICONS ====================-->
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+
+        <!--=============== JQUERY ===============-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!--=============== FAVICON ===============-->
+        <link rel="icon" type="image/x-icon" href="{% static '../static/images/icon.png' %}">
+
+        <!--=============== BOXICONS ===============-->
+        <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+
+        <!--=============== SWIPER CSS ===============-->
+        <link rel="stylesheet" href="{% static '../static/css/swiper-bundle.min.css' %}">
+
+        <!--=============== CSS ===============-->
+        <link rel="stylesheet" href="{% static '../static/css/style.css' %}">
+
+        <!--=============== JAVASCRIPT ===============-->
+        <link rel="stylesheet" href="{% static '../static/js/main.js' %}">
+
+        <!--=============== BIRI ===============-->
+        <script src="https://unpkg.com/biri/dist/biri.min.js"></script>
+
+        <title>Notice Board</title>
+    </head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{% url 'Forum:forum' %}" class="nav__logo">
+                <img src="{% static '../static/images/icon.png' %}" alt="" class="nav__logo-img">
+                Notice Board
+            </a>
+            <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="{% url 'Forum:forum' %}" class="nav__link active-link">Home</a>
+                        </li>
+                        <!--
+                        <li class="nav__item">
+                            <a href="" class="nav__link">Messaging</a>
+                        </li>
+                        -->
+                    </ul>
+                    <div class="nav__close" id="nav-close">
+                        <i class='bx bx-x' ></i>
+                    </div>
+                </div>
+            <div class="nav__btns">
+                <!-- Theme change button -->
+                <i class='bx bx-moon change-theme' id="theme-button"></i>
+                <!-- Toggle button -->
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class='bx bx-grid-alt' ></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="home" id="home">
+            <div class="home__container container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </section>
+    </main>
+    <footer class="footer section">
+            <div class="footer__container container grid">
+                <div>
+                    <h3 class="footer__title">Similar Services</h3>
+                    <ul class="footer__links">
+                        <li>
+                            <a href="https://yikyak.com/" class="footer__link">Yikyak</a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/" class="footer__link">Twitter</a>
+                        </li>
+                        <li>
+                            <a href="https://boards.4channel.org/" class="footer__link">4chan</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer__title">Support</h3>
+
+                    <ul class="footer__links">
+                        <li>
+                            <a href="#" class="footer__link">User Guide</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">FAQ</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <span class="footer__copy">&#169; Evan Scully. All rights reserved</span>
+        </footer>
+    <!--=============== JS ===============-->
+    <script src="{% static '../static/js/main.js' %}"></script>
+</body>
+</html>

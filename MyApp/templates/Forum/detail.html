@@ -1,0 +1,186 @@
+{% extends "template.html" %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block content %}
+<div class="detail">
+    <div class="main--image">
+        <img src="{{ forum.image.url }}" alt="{{ forum.title }}">
+    </div>
+    <div class="main--title">
+        <h1>{{ forum.title }}</h1>
+        <p>by {{ forum.get_user }}</p>
+        <p>{{ forum.hashtag }}</p>
+    </div>
+    {% if forum.embed_video %}
+        <div class="main--title">
+            <p style="cursor:pointer" onclick="embedVideo('{{ forum.embed_video }}')">{{ forum.embed_video }} [EMBED]</p>
+        </div>
+    {% endif %}
+    <div id="embed_video" hidden>
+    </div>
+    <p>{{ forum.text }}</p>
+    <div class="main--title">
+        <div class="forum--vote enlarge--text">
+            <a role="button" title="upvote" class="clear--button" onclick="vote(this, {{ forum.id }})">
+                <i class="uil uil-arrow-up"></i>
+            </a>
+            <div class="forum--summary--information" id="score">
+                {{ forum.get_score }}
+            </div>
+            <a role="button" title="downvote" class="clear--button" onclick="vote(this, {{ forum.id }})">
+                <i class="uil uil-arrow-down"></i>
+            </a>
+        </div>
+        <div class="forum--summary--information enlarge--text">
+            <i class="uil uil-comments-alt"></i>
+            <span id="comment-count">{{ forum.comment_set.count }}</span>
+        </div>
+    </div>
+    {% if error_message %}
+        <p>
+            <strong>{{ error_message }}</strong>
+        </p>
+    {% endif %}
+</div>
+<div class="comment-section">
+    <h1>Comments</h1>
+    <form id="comment_form" action="" onsubmit="post(this);return false" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="forum" value="{{ forum.id }}">
+        <div class="comment--form--text">
+            <label for="text">Text:</label>
+            <textarea class="form--text" id="text" name="text" maxlength="2000"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">post</button>
+    </form>
+    <div id="comments">
+        {% load mptt_tags %}
+        {% recursetree comments %}
+            <div class="parent">
+                {% include 'partials/_comment.html' with comment=node %}
+                {% if not node.is_leaf_node %}
+                    <div class="children">
+                        {{ children }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endrecursetree %}
+    </div>
+</div>
+
+<script>
+function post(form) {
+    let data = $(form).serializeArray();
+    data.push({name: "biri_key", value: visitorId});
+
+    $.ajax({
+        url: "{% url 'Forum:comment' forum.id %}",
+        data: data,
+        type: 'POST',
+    success: function (data) {
+        const div = document.getElementById('comments');
+        div.insertAdjacentHTML('afterbegin', data);
+
+        // Remove no comments and reset form
+        $("#comment_form").trigger("reset");
+        $('#no_comment').remove();
+        var number = parseInt($('#comment-count').text());
+        $('#comment-count').text(number + 1);
+
+        // Scroll to new comment
+        $([document.documentElement, document.body]).animate({
+        scrollTop: $("#comments").offset().top - 300,
+            behavior:'smooth'
+        }, 1500);
+
+        },
+        error: function() {
+            console.log('failure');
+        }
+    });
+}
+
+function post_reply(form) {
+    let id = "#" + form.id;
+    let data = $(form).serializeArray();
+    data.push({name: "biri_key", value: visitorId});
+
+    $.ajax({
+        url: "{% url 'Forum:comment' forum.id %}",
+        type: 'POST',
+        data: data,
+        success: function (data) {
+            // Insert the new comment into the thread
+            let div = $(id);
+            let div2 = div.closest('.comment');
+            div2[0].insertAdjacentHTML('afterend', data);
+            let div3 = div.closest('.comment');
+
+            // Reset and hide the form
+            $(id).trigger("reset");
+            $(id).toggleClass("show_form");
+
+            // Increment comment count
+            $('#comment-count').text(parseInt($('#comment-count').text()) + 1);
+        },
+        error: function() {
+            console.log('vote failure');
+        }
+    });
+}
+
+function vote(type) {
+    let vote = $(type).attr("title");
+
+    $.ajax({
+    url: "{% url 'Forum:forum_vote' forum.id %}",
+    data: { 'csrfmiddlewaretoken': '{{ csrf_token }}', vote: vote, fingerprint: visitorId},
+    type: 'POST',
+        success: function (data) {
+            change_class_vote(type, '.forum--vote', data);
+            fetch("{% url 'Forum:forum_vote' forum.id %}", {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    $("#score").html(data['score']);
+                })},
+        error: function() {
+            console.log('vote failure');
+        }
+    });
+}
+
+function comment_vote(type, id) {
+    let vote = $(type).attr("title");
+
+    $.ajax({
+        url: {{ forum.id }} + "/" + id + "/vote",
+        data: { 'csrfmiddlewaretoken' : '{{ csrf_token }}', vote: vote, fingerprint: visitorId},
+        type: 'POST',
+        success: function (data) {
+            change_class_vote(type, '.comment--vote', data);
+
+            fetch({{ forum.id }} + "/" + id + "/vote", {
+                method: "GET",
+                })
+                .then(response => response.json())
+                .then(data => {
+                    $("#comment_score_" + id).html(data['score']);
+                })},
+        error: function() {
+            console.log('vote failure')
+        }
+    });
+}
+
+visitorId = ""
+window.onload = (event) => {
+    start();
+};
+</script>
+{% endblock %}

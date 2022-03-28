@@ -1,0 +1,12 @@
+.field-parent_comment {
+    width: 50px;
+    overflow: hidden;
+}
+
+.column-parent_comment {
+    width: 100px;
+    overflow: hidden;
+}
+input {
+    max-width: 200px;
+}
