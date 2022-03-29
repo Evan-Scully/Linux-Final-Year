@@ -7,19 +7,26 @@ from django.contrib.gis.measure import Distance
 class ForumTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(name="Sample User", biri="123456")
-        forum = Forum.objects.create(title="Test Forum One", text="Sample Text", latitude=-53.00, longitude=-7.9,
+
+        Forum.objects.create(title="Test Forum Two", text="Sample Text One", latitude=-53.3, longitude=-8, user=user)
+        forum = Forum.objects.create(title="Test Forum One", text="Sample Text Two", latitude=-53.00, longitude=-7.9,
                                      user=user)
-        Comment.objects.create(text="Sample Text", forum=forum)
+
+        Comment.objects.create(text="Comment Text", forum=forum)
         Voter.objects.create(forum=forum, user=user, score=0)
 
     def test_get_forum(self):
         forum = Forum.objects.filter(location__distance_lt=(Point(-7.9, 53.4), Distance(km=10))).first()
-        self.assertEqual(forum.latitude, -53.00)
+        self.assertEqual(forum.text, "Sample Text One")
+
+    def test_get_forums_local(self):
+        forum = Forum.objects.filter(location__distance_lt=(Point(-7.9, 53.4), Distance(km=10)))
+        self.assertEqual(forum.__len__(), 2)
 
     def test_get_comment(self):
-        forum = Forum.objects.filter(location__distance_lt=(Point(-7.9, 53.4), Distance(km=10))).first()
+        forum = Forum.objects.get(id=2)
         comments = forum.comment_set
-        self.assertEqual(comments.first().text, 'Sample Text')
+        self.assertEqual(comments.first().text, 'Comment Text')
 
     def test_get_score(self):
         forum = Forum.objects.get(id=1)
