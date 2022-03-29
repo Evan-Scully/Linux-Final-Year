@@ -34,8 +34,8 @@ DEBUG = True
 
 # change to true ^^^^
 # ALLOWED_HOSTS = ['*']
-# allowed hosts * to access off phone
-ALLOWED_HOSTS = ['raspberrypi', '127.0.0.1']
+
+ALLOWED_HOSTS = ['raspberrypi', '127.0.0.1', 'raspberrypi.local']
 
 
 # Application definition
