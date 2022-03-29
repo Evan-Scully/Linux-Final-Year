@@ -1,7 +1,7 @@
 <div class="comment">
     <div class="comment--content">
         <p>{{ comment.text }}</p>
-        <p>{{ comment.get_user }}</p>
+        <p>{% if comment.name %}{{ comment.name }}{% else %}{{ comment.get_user }}{% endif %}</p>
         <div id="comment_score_{{ comment.id }}">
             {% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %}
 

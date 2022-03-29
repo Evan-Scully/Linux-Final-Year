@@ -143,7 +143,10 @@ def comment(request, forum_id):
             new_comment = form.save()
             new_comment.user = user
             new_comment.save()
+
             comment_json = new_comment.__dict__
+            comment_json['name'] = user.name
+            print(comment_json)
             html = render_to_string('partials/_comment.html', {"comment": comment_json, "forum": current_forum},
                                     request=request)
             return HttpResponse(html)
