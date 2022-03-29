@@ -9,7 +9,7 @@
     </div>
     <div class="main--title">
         <h1>{{ forum.title }}</h1>
-        <p>by {{ forum.get_user }}</p>
+        <p>by {{ forum.get_user.name }}</p>
         <p>{{ forum.hashtag }}</p>
     </div>
     {% if forum.embed_video %}

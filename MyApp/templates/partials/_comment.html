@@ -1,6 +1,6 @@
 <div class="comment">
     <div class="comment--content {% if comment.reply %}children{% endif %}">
-        <h4>{% if comment.name %}{{ comment.name }}{% else %}{{ comment.get_user }}{% endif %}</h4>
+        <h4>{{ comment.get_user.name }}</h4>
         <h5 id="comment_score_{{ comment.id }}">{% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %}</h5>
         <p>{{ comment.text }}</p>
         <div class="comment--vote">

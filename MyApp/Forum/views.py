@@ -146,7 +146,7 @@ def comment(request, forum_id):
 
             comment_json = new_comment.__dict__
             comment_json['name'] = user.name
-            comment_json['reply'] = "reply"
+            # comment_json['reply'] = "reply"
 
             html = render_to_string('partials/_comment.html', {"comment": comment_json, "forum": current_forum},
                                     request=request)

@@ -29,7 +29,7 @@ class VoterManager(models.Manager):
         return forums
 
     def get_forum(self, voter):
-        for forum in Forum.objects.filter(forum=voter.forum_voted):
+        for forum in Forum.objects.filter(id=voter.forum_voted.id):
             return forum
 
 
@@ -96,7 +96,7 @@ class Forum(models.Model):
 
     def get_user(self):
         user = User.objects.get(id=self.user.id)
-        return user.name
+        return user
 
     objects = models.Manager()
 
@@ -123,7 +123,7 @@ class Comment(MPTTModel):
 
     def get_user(self):
         user = User.objects.get(id=self.user.id)
-        return user.name
+        return user
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
