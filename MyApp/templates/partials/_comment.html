@@ -1,11 +1,8 @@
 <div class="comment">
-    <div class="comment--content">
+    <div class="comment--content {% if comment.reply %}children{% endif %}">
+        <h4>{% if comment.name %}{{ comment.name }}{% else %}{{ comment.get_user }}{% endif %}</h4>
+        <h5 id="comment_score_{{ comment.id }}">{% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %}</h5>
         <p>{{ comment.text }}</p>
-        <p>{% if comment.name %}{{ comment.name }}{% else %}{{ comment.get_user }}{% endif %}</p>
-        <div id="comment_score_{{ comment.id }}">
-            {% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %}
-
-        </div>
         <div class="comment--vote">
             <a role="button" title="upvote" class="clear--button" onclick="comment_vote(this, {{ comment.id }})">
                 <i class="uil uil-arrow-up"></i>
