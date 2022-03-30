@@ -122,7 +122,7 @@ function open_reply(form_id) {
     $("#reply" + form_id).toggleClass("show_form");
 }
 
-$('.hide--comment').click(function () {
+$(document).on("click", '.hide--comment', function() {
     let comment = $(this).parents('div');
     comment.next('.comment--content').toggle();
 

@@ -143,12 +143,15 @@ def comment(request, forum_id):
             new_comment = form.save()
             new_comment.user = user
             new_comment.save()
+            comment_get = get_object_or_404(Comment, id=new_comment.id)
 
-            comment_json = new_comment.__dict__
-            comment_json['name'] = new_comment.user.name
-            # comment_json['reply'] = "reply"
+            if comment_get.parent:
+                reply = True
+            else:
+                reply = False
 
-            html = render_to_string('partials/_comment.html', {"comment": comment_json, "forum": current_forum},
+            html = render_to_string('partials/_comment.html', {"comment": comment_get, "forum": current_forum,
+                                                               "reply": reply},
                                     request=request)
             return HttpResponse(html)
         else:

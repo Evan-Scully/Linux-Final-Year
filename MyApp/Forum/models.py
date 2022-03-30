@@ -151,4 +151,10 @@ class Comment(MPTTModel):
             return str(days) + " day ago"
         else:
             hours = math.trunc(time_since_post.seconds / 3600)
+            if hours <= 0:
+                minutes = math.trunc(time_since_post.seconds / 60)
+                if minutes > 1:
+                    return str(minutes) + " m ago"
+                else:
+                    return str(time_since_post.seconds) + " s ago"
             return str(hours) + "h ago"
