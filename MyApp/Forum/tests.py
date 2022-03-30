@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 from .models import Forum, Comment, Voter, User
 from django.contrib.gis.geos import Point
@@ -23,11 +25,6 @@ class ForumTestCase(TestCase):
         forum = Forum.objects.filter(location__distance_lt=(Point(-7.9, 53.4), Distance(km=10)))
         self.assertEqual(forum.__len__(), 2)
 
-    def test_get_comment(self):
-        forum = Forum.objects.get(id=2)
-        comments = forum.comment_set
-        self.assertEqual(comments.first().text, 'Comment Text')
-
     def test_get_score(self):
         forum = Forum.objects.get(id=1)
         score = forum.get_score()
@@ -41,6 +38,10 @@ class ForumTestCase(TestCase):
     def test_published_recent(self):
         forum = Forum.objects.get(id=1)
         self.assertEqual(forum.was_published_recently(), 1)
+
+    def test_get_age(self):
+        forum = Forum.objects.get(id=1)
+        self.assertEqual(forum.get_age(), 0)
 
 
 class VoterTestCase(TestCase):
@@ -63,6 +64,21 @@ class VoterTestCase(TestCase):
         voter_record = Voter.objects.get(forum_voted_id=1, user_id=1)
         voter_record.down_vote()
         self.assertEqual(voter_record.score, -1)
+
+
+class CommentTestCase(TestCase):
+    def setUp(self):
+        forum = Forum.objects.create(title="Test Forum Two", text="Sample Text One", latitude=-53.3, longitude=-8)
+        Comment.objects.create(text="Comment Text", forum=forum)
+
+    def test_get_comment(self):
+        forum = Forum.objects.get(id=1)
+        comments = forum.comment_set
+        self.assertEqual(comments.first().text, 'Comment Text')
+
+    def test_get_age_comment(self):
+        comment = Comment.objects.get(id=1)
+        self.assertEqual(comment.get_age(), 0)
 
 
 class VoterManagerTestCase(TestCase):
@@ -98,4 +114,3 @@ class UserTestCase(TestCase):
     def test_save_name(self):
         user = User.objects.create(biri="654321")
         self.assertEqual(user.name, "U654321")
-

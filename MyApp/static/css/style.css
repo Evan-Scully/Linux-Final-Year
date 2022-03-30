@@ -547,6 +547,10 @@ body::-webkit-scrollbar {
 .downvote {
   color: blue;
 }
+
+.comment--user--info > h4, h5 {
+  display: inline;
+}
 /*=============== FORUM-FORM ===============*/
 .main--page--form {
   width: 45%;

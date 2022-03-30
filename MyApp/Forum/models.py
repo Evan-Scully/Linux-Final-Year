@@ -1,10 +1,11 @@
 import datetime
 import json
+import math
 
 from django.contrib import admin
 from django.template.defaultfilters import slugify
 from django.utils import timezone
-from django.utils.timezone import now
+from django.utils.timezone import now, utc
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
 from django.contrib.gis.db import models as sp_models
@@ -85,6 +86,15 @@ class Forum(models.Model):
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
+    def get_age(self):
+        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_since_post = current_time - self.pub_date
+
+        if time_since_post.days > 1:
+            return time_since_post.days
+        else:
+            return time_since_post.seconds * 3600
+
     def __str__(self):
         return self.title
 
@@ -128,3 +138,17 @@ class Comment(MPTTModel):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
+
+    def get_age(self):
+        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_since_post = current_time - self.pub_date
+
+        if 0 < time_since_post.days < 2:
+            days = time_since_post.days
+            return str(days) + " days ago"
+        elif time_since_post.days > 1:
+            days = time_since_post.days
+            return str(days) + " day ago"
+        else:
+            hours = math.trunc(time_since_post.seconds / 3600)
+            return str(hours) + "h ago"
