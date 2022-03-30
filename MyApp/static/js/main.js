@@ -121,3 +121,9 @@ let start = async function() {
 function open_reply(form_id) {
     $("#reply" + form_id).toggleClass("show_form");
 }
+
+$('.hide--comment').click(function () {
+    let comment = $(this).parents('div');
+    comment.next('.comment--content').toggle();
+    $(this).addClass('uil uil-plus-square').removeClass('uil uil-minus-square-full');
+});

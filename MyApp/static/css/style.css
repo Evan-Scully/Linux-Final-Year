@@ -506,6 +506,7 @@ body::-webkit-scrollbar {
 
 .comment {
   text-align: left;
+  display: block;
 }
 
 .comment > p{
@@ -548,7 +549,7 @@ body::-webkit-scrollbar {
   color: blue;
 }
 
-.comment--user--info > h4, h5 {
+.comment--user--info > h4, h5, i {
   display: inline;
 }
 /*=============== FORUM-FORM ===============*/
@@ -580,9 +581,7 @@ body::-webkit-scrollbar {
 }
 
 .form__submit {
-  margin: .25rem 0 .25rem 0;
-  margin-right: auto;
-  margin-left: auto;
+  margin: .25rem auto;
 }
 
 .form--heading {
