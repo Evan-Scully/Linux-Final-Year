@@ -156,7 +156,7 @@ class Comment(MPTTModel):
                 if minutes > 1:
                     return str(minutes) + " m ago"
                 else:
-                    if time_since_post.seconds = 0:
+                    if time_since_post.seconds == 0:
                         return "now"
                     else:
                         return str(time_since_post.seconds) + " s ago"
