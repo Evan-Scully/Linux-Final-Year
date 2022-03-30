@@ -517,6 +517,10 @@ body::-webkit-scrollbar {
   padding: .5rem 0 .5rem 0;
 }
 
+#comments {
+  padding-bottom: 2rem;
+}
+
 .comment--form--text {
   display: flex;
   flex-direction: column;

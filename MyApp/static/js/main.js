@@ -125,5 +125,12 @@ function open_reply(form_id) {
 $('.hide--comment').click(function () {
     let comment = $(this).parents('div');
     comment.next('.comment--content').toggle();
-    $(this).addClass('uil uil-plus-square').removeClass('uil uil-minus-square-full');
+
+    if ($(this).hasClass("uil-plus-square")) {
+        $(this).addClass('uil uil-minus-square-full').removeClass('uil uil-plus-square');
+    }
+    else {
+        $(this).addClass('uil uil-plus-square').removeClass('uil uil-minus-square-full');
+    }
+
 });
