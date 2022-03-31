@@ -16,6 +16,10 @@ class VoterAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.TabularInline):
+    formfield_overrides = {
+        models.CharField: {'widget': Textarea(attrs={'rows': 2})}
+    }
+
     fieldsets = [
         (None, {'fields': ['text', 'user', 'parent']}),
         ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
@@ -25,6 +29,10 @@ class CommentAdmin(admin.TabularInline):
 
 
 class ForumAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.CharField: {'widget': Textarea(attrs={'rows': 2})}
+    }
+
     fieldsets = [
         (None, {'fields': ['title', 'text', 'hashtag', 'image', 'location', 'user', 'embed_video']}),
         ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),

@@ -9,7 +9,10 @@
     </div>
     <div class="main--title">
         <h1>{{ forum.title }}</h1>
-        <p>by {{ forum.get_user.name }}</p>
+        <div class="main--title-information">
+            <h5>{{ forum.get_age }}</h5>
+            <h5>by {{ forum.get_user.name }}</h5>
+        </div>
         <p>{{ forum.hashtag }}</p>
     </div>
     {% if forum.embed_video %}

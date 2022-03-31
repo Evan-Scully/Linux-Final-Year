@@ -437,6 +437,10 @@ body::-webkit-scrollbar {
   padding: 0.5rem 0 0.5rem 0;
 }
 
+.main--title-information > p {
+  display: inline-block;
+}
+
 .home--page {
   display: flex;
   flex-wrap: wrap;

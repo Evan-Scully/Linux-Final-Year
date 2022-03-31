@@ -34,6 +34,46 @@ class VoterManager(models.Manager):
             return forum
 
 
+class Base(models.Model):
+    pub_date = models.DateTimeField(default=now, blank=True)
+    text = models.CharField(max_length=10000, blank=False)
+
+    def get_age(self):
+        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
+        time_since_post = current_time - self.pub_date
+        days = time_since_post.days
+        seconds = time_since_post.seconds
+
+        if days >= 730:
+            days = math.trunc(days / 365)
+            return str(days) + " years ago"
+        elif days >= 365:
+            days = math.trunc(days / 365)
+            return str(days) + " year ago"
+
+        if days >= 2:
+            days = days
+            return str(days) + " days ago"
+        elif days == 1:
+            days = days
+            return str(days) + " day ago"
+        else:
+            hours = math.trunc(seconds / 3600)
+            if hours <= 0:
+                minutes = math.trunc(seconds / 60)
+                if minutes >= 1:
+                    return str(minutes) + "m ago"
+                else:
+                    if seconds == 0:
+                        return "now"
+                    else:
+                        return str(seconds) + "s ago"
+            return str(hours) + "h ago"
+
+    class Meta:
+        abstract = True
+
+
 class Voter(models.Model):
     forum_voted = models.ForeignKey('Forum', on_delete=models.CASCADE, blank=True, null=True,
                                     related_name='forum_voter_set')
@@ -55,14 +95,12 @@ class Voter(models.Model):
     voted = VoterManager()
 
 
-class Forum(models.Model):
+class Forum(Base):
     slug = models.CharField(max_length=256, blank=True)
 
     title = models.CharField(max_length=200, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    text = models.CharField(max_length=2000, blank=False)
     hashtag = models.CharField(max_length=2000, blank=True)
-    pub_date = models.DateTimeField(default=now, blank=True)
 
     score = models.ManyToManyField(Voter, blank=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True, default="default.jpg")
@@ -87,15 +125,6 @@ class Forum(models.Model):
     def was_published_recently(self):
         return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
-    def get_age(self):
-        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
-        time_since_post = current_time - self.pub_date
-
-        if time_since_post.days > 1:
-            return time_since_post.days
-        else:
-            return time_since_post.seconds * 3600
-
     def __str__(self):
         return self.title
 
@@ -118,13 +147,11 @@ class Forum(models.Model):
     objects = models.Manager()
 
 
-class Comment(MPTTModel):
+class Comment(MPTTModel, Base):
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     path = models.CharField(max_length=10000, blank=True)
 
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    text = models.CharField(max_length=10000, blank=False)
-    pub_date = models.DateTimeField(default=now, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     score = models.ManyToManyField(Voter, blank=True)
@@ -145,26 +172,3 @@ class Comment(MPTTModel):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
-
-    def get_age(self):
-        current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
-        time_since_post = current_time - self.pub_date
-
-        if time_since_post.days >= 2:
-            days = time_since_post.days
-            return str(days) + " days ago"
-        elif time_since_post.days == 1:
-            days = time_since_post.days
-            return str(days) + " day ago"
-        else:
-            hours = math.trunc(time_since_post.seconds / 3600)
-            if hours <= 0:
-                minutes = math.trunc(time_since_post.seconds / 60)
-                if minutes >= 1:
-                    return str(minutes) + " m ago"
-                else:
-                    if time_since_post.seconds == 0:
-                        return "now"
-                    else:
-                        return str(time_since_post.seconds) + " s ago"
-            return str(hours) + "h ago"

@@ -39,10 +39,6 @@ class ForumTestCase(TestCase):
         forum = Forum.objects.get(id=1)
         self.assertEqual(forum.was_published_recently(), 1)
 
-    def test_get_age(self):
-        forum = Forum.objects.get(id=1)
-        self.assertEqual(forum.get_age(), 0)
-
 
 class VoterTestCase(TestCase):
     def setUp(self):
@@ -75,10 +71,6 @@ class CommentTestCase(TestCase):
         forum = Forum.objects.get(id=1)
         comments = forum.comment_set
         self.assertEqual(comments.first().text, 'Comment Text')
-
-    def test_get_age_comment(self):
-        comment = Comment.objects.get(id=1)
-        self.assertEqual(comment.get_age(), 0)
 
 
 class VoterManagerTestCase(TestCase):
@@ -113,4 +105,54 @@ class UserTestCase(TestCase):
 
     def test_save_name(self):
         user = User.objects.create(biri="654321")
-        self.assertEqual(user.name, "U654321")
+        self.assertEqual(user.name, "U654321")#
+
+
+class AgeTestCase(TestCase):
+    # Boundary Value Analysis
+    # < 1 second, now
+    # 1 - 59 seconds, minutes
+    # 1 - 11 months
+    # 1 -> max_years
+
+    def setUp(self):
+        Forum.objects.create(title="Test Forum Two", text="Sample Text One", latitude=-53.3, longitude=-8)
+
+    def test_get_age_now(self):
+        forum = Forum.objects.get(id=1)
+        self.assertEqual(forum.get_age(), "now")
+
+    def test_get_age_minutes(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(minutes=1)
+        self.assertEqual(forum.get_age(), "1m ago")
+
+    def test_get_age_hours(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(minutes=60)
+        self.assertEqual(forum.get_age(), "1h ago")
+
+    def test_get_age_seconds(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(seconds=55)
+        self.assertEqual(forum.get_age(), "55s ago")
+
+    def test_get_age_days(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(days=1)
+        self.assertEqual(forum.get_age(), "1 day ago")
+
+    def test_get_age_days_greater(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(days=2)
+        self.assertEqual(forum.get_age(), "2 days ago")
+
+    def test_get_age_year(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(days=365)
+        self.assertEqual(forum.get_age(), "1 year ago")
+
+    def test_get_age_year_greater(self):
+        forum = Forum.objects.get(id=1)
+        forum.pub_date = forum.pub_date - datetime.timedelta(days=730)
+        self.assertEqual(forum.get_age(), "2 years ago")
