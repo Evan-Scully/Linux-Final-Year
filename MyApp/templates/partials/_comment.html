@@ -1,34 +1,36 @@
-<div class="comment {% if reply %}children{% endif %}">
-    <div class="comment--user--info">
-        <i class="uil uil-minus-square-full hide--comment"></i>
-        <h5>{{ comment.get_user.name }}</h5>
-        <h5>{{ comment.get_age }}</h5>
-        <h5 id="comment_score_{{ comment.id }}">{% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %} score</h5>
-    </div>
-    <div class="parent">
-        <div class="comment--content">
-            <p>{{ comment.text }}</p>
-            <div class="comment--vote">
-                <a role="button" title="upvote" class="clear--button" onclick="comment_vote(this, {{ comment.id }})">
-                    <i class="uil uil-arrow-up"></i>
-                </a>
-                <a role="button" title="downvote" class="clear--button " onclick="comment_vote(this, {{ comment.id }})">
-                    <i class="uil uil-arrow-down"></i>
-                </a>
-                <a role="button" class="clear--button" onclick="open_reply({{ comment.id }})">
-                    <i class="uil uil-corner-up-left-alt"></i>
-                </a>
-                <form id="reply{{ comment.id }}" action="" onsubmit="post_reply(this); return false" method="post" enctype="multipart/form-data" class="hide_form" novalidate>
-                    {% csrf_token %}
-                    <input type="hidden" name="parent" value="{{ comment.id }}">
-                    <input type="hidden" name="forum" value="{{ forum.id }}">
-                    <div class="comment--form--text">
-                        <label for="text">Text:</label>
-                        <textarea class="form--text" id="text" name="text" maxlength="2000"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">post</button>
-                </form>
+{% if reply %}<div class="children">{% endif %}
+    <div class="comment">
+        <div class="comment--user--info">
+            <i class="uil uil-minus-square-full hide--comment"></i>
+            <h5>{{ comment.get_user.name }}</h5>
+            <h5>{{ comment.get_age }}</h5>
+            <h5 id="comment_score_{{ comment.id }}">{% if comment.get_score %}{{ comment.get_score }}{% else %}0{% endif %} score</h5>
+        </div>
+        <div class="parent">
+            <div class="comment--content">
+                <p>{{ comment.text }}</p>
+                <div class="comment--vote">
+                    <a role="button" title="upvote" class="clear--button" onclick="comment_vote(this, {{ comment.id }})">
+                        <i class="uil uil-arrow-up"></i>
+                    </a>
+                    <a role="button" title="downvote" class="clear--button " onclick="comment_vote(this, {{ comment.id }})">
+                        <i class="uil uil-arrow-down"></i>
+                    </a>
+                    <a role="button" class="clear--button" onclick="open_reply({{ comment.id }})">
+                        <i class="uil uil-corner-up-left-alt"></i>
+                    </a>
+                    <form id="reply{{ comment.id }}" action="" onsubmit="post_reply(this); return false" method="post" enctype="multipart/form-data" class="hide_form" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="parent" value="{{ comment.id }}">
+                        <input type="hidden" name="forum" value="{{ forum.id }}">
+                        <div class="comment--form--text">
+                            <label for="text">Text:</label>
+                            <textarea class="form--text" id="text" name="text" maxlength="2000"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">post</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% if reply %}</div>{% endif %}
