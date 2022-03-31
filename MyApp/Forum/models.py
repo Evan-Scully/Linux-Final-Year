@@ -65,12 +65,13 @@ class Forum(models.Model):
     pub_date = models.DateTimeField(default=now, blank=True)
 
     score = models.ManyToManyField(Voter, blank=True)
-    image = models.ImageField(upload_to='images/', blank=True)
-    embed_video = models.URLField(max_length=200, blank=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True, default="default.jpg")
+    embed_video = models.URLField(max_length=200, blank=True, null=True)
 
     latitude = sp_models.DecimalField(decimal_places=6, max_digits=9, blank=False, null=True, verbose_name='Latitude')
     longitude = sp_models.DecimalField(decimal_places=6, max_digits=9, blank=False, null=True, verbose_name='Longitude')
 
+    # DELETE DATABASE, then comment location then migrate then uncomment
     # ADD IN LOCATION LAST COMMENT IT OUT FIRST THEN RUN MIGRATIONS
     location = sp_models.PointField(geography=True, null=True, blank=True)
 
@@ -108,6 +109,12 @@ class Forum(models.Model):
         user = User.objects.get(id=self.user.id)
         return user
 
+    def check_if_image_exists(self):
+        if not self.image:
+            return False
+        else:
+            return True
+
     objects = models.Manager()
 
 
@@ -143,17 +150,17 @@ class Comment(MPTTModel):
         current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
         time_since_post = current_time - self.pub_date
 
-        if 0 < time_since_post.days < 2:
+        if time_since_post.days >= 2:
             days = time_since_post.days
             return str(days) + " days ago"
-        elif time_since_post.days > 1:
+        elif time_since_post.days == 1:
             days = time_since_post.days
             return str(days) + " day ago"
         else:
             hours = math.trunc(time_since_post.seconds / 3600)
             if hours <= 0:
                 minutes = math.trunc(time_since_post.seconds / 60)
-                if minutes > 1:
+                if minutes >= 1:
                     return str(minutes) + " m ago"
                 else:
                     if time_since_post.seconds == 0:

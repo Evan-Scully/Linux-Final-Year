@@ -43,11 +43,10 @@ ALLOWED_HOSTS = ['raspberrypi', '127.0.0.1', 'raspberrypi.local']
 INSTALLED_APPS = [
     # Add in my app reference as shown
     'Forum.apps.ForumConfig',
-    # Tree of Comments
+    # Tree creator
     'mptt',
     # Spatial Database
     'django.contrib.gis',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

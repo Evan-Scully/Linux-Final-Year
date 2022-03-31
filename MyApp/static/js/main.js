@@ -124,7 +124,9 @@ function open_reply(form_id) {
 
 $(document).on("click", '.hide--comment', function() {
     let comment = $(this).parents('div');
-    comment.next('.comment--content').toggle();
+
+    comment.next('.children').toggle();
+    comment.next('.parent').toggle();
 
     if ($(this).hasClass("uil-plus-square")) {
         $(this).addClass('uil uil-minus-square-full').removeClass('uil uil-plus-square');

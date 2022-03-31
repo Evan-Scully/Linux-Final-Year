@@ -507,6 +507,11 @@ body::-webkit-scrollbar {
 .comment {
   text-align: left;
   display: block;
+  //background-color: red;
+}
+
+.parent {
+  display: block;
 }
 
 .comment > p{

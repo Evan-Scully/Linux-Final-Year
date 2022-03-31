@@ -57,14 +57,12 @@
     <div id="comments">
         {% load mptt_tags %}
         {% recursetree comments %}
-            <div class="parent">
-                {% include 'partials/_comment.html' with comment=node %}
-                {% if not node.is_leaf_node %}
-                    <div class="children">
-                        {{ children }}
-                    </div>
-                {% endif %}
-            </div>
+            {% include 'partials/_comment.html' with comment=node %}
+            {% if not node.is_leaf_node %}
+                <div class="children">
+                    {{ children }}
+                </div>
+            {% endif %}
         {% endrecursetree %}
     </div>
 </div>
@@ -170,7 +168,7 @@ function comment_vote(type, id) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    $("#comment_score_" + id).html(data['score']);
+                    $("#comment_score_" + id).html(data['score'] + " score");
                 })},
         error: function() {
             console.log('vote failure')
