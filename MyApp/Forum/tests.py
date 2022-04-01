@@ -127,6 +127,10 @@ class UserTestCase(TestCase):
         user = User.objects.create(biri="654321")
         self.assertEqual(user.name, "U654321")
 
+    def test_scramble_name(self):
+        user = User.objects.get(biri=123456)
+        self.assertEqual(user.name, "Sample User")
+
 
 class AgeTestCase(TestCase):
     # Boundary Value Analysis

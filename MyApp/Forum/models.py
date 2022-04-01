@@ -9,16 +9,21 @@ from django.utils.timezone import now, utc
 from mptt.models import MPTTModel, TreeForeignKey
 from django.db import models
 from django.contrib.gis.db import models as sp_models
+import random
 
 
 class User(models.Model):
     name = models.CharField(max_length=24)
     biri = models.CharField(max_length=100)
+    random_name = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = "U" + self.biri
+            self.name = "U" + self.scramble()
         super(User, self).save(*args, **kwargs)
+
+    def scramble(self):
+        return ''.join(random.sample(self.biri, len(self.biri)))
 
 
 class VoterManager(models.Manager):
