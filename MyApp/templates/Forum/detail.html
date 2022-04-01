@@ -181,28 +181,20 @@ function comment_vote(type, comment_id) {
 
 
 function delete_comment(comment_id) {
-
     $.ajax({
         url: {{ forum.id }}  + "/" + comment_id + "?biri_key=" + visitorId,
         headers:{'X-CSRFToken':'{{ csrf_token }}'},
         type: 'DELETE',
         contentType: 'application/json',
         success: function(result) {
-            //let comment = $('#comment--' + comment_id).parents();
-            let comment = $('#comment--' + comment_id).parents('div');
-
-            let dic = comment.prev('.comment--user--info');
-            dic.html("<h5>[Deleted]</h5>");
-
-            fetch({{ forum.id }} + "/" + comment_id, {
-                method: "GET",
-                })
-                .then(response => response.json())
-                .then(data => {
-
-                })},
+            let comment = $('#comment--' + comment_id).parents('.comment');
+            $('.user',comment).html("<h5>[Deleted]</h5>");
+            $('.comment--text', comment).html("");
+            //$('#comment--' + comment_id + " :a").prop("disabled", true);
+            $('.comment--vote', comment).children('a').prop("onclick", null).off("click");
+            },
         error: function(result){
-
+            console.log();
         }
     });
 }

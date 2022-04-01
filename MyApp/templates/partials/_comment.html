@@ -14,7 +14,9 @@
         </div>
         <div class="parent">
             <div class="comment--content">
-                <p>{{ comment.text }}</p>
+                <div class="comment--text">
+                    <p>{{ comment.text }}</p>
+                </div>
                 <div class="comment--vote" id="comment--{{ comment.id }}">
                     <a role="button" title="upvote" class="clear--button" {% if comment.user != None %}onclick="comment_vote(this, {{ comment.id }}){% endif %}">
                         <i class="uil uil-arrow-up"></i>
