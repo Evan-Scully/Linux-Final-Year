@@ -39,6 +39,16 @@ class ForumTestCase(TestCase):
         forum = Forum.objects.get(id=1)
         self.assertEqual(forum.was_published_recently(), 1)
 
+    def test_delete(self):
+        forum = Forum.objects.get(id=1)
+        forum.delete_user()
+        self.assertEqual(forum.user, None)
+
+    def test_delete_text(self):
+        forum = Forum.objects.get(id=1)
+        forum.delete_user()
+        self.assertEqual(forum.text, "Sample Text One")
+
 
 class VoterTestCase(TestCase):
     def setUp(self):
@@ -71,6 +81,16 @@ class CommentTestCase(TestCase):
         forum = Forum.objects.get(id=1)
         comments = forum.comment_set
         self.assertEqual(comments.first().text, 'Comment Text')
+
+    def test_delete(self):
+        comment = Comment.objects.get(id=1)
+        comment.delete()
+        self.assertEqual(comment.user, None)
+
+    def test_delete_text(self):
+        comment = Comment.objects.get(id=1)
+        comment.delete_user()
+        self.assertEqual(comment.text, "Deleted")
 
 
 class VoterManagerTestCase(TestCase):
@@ -105,7 +125,7 @@ class UserTestCase(TestCase):
 
     def test_save_name(self):
         user = User.objects.create(biri="654321")
-        self.assertEqual(user.name, "U654321")#
+        self.assertEqual(user.name, "U654321")
 
 
 class AgeTestCase(TestCase):

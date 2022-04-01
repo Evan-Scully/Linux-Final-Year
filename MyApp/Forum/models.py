@@ -37,6 +37,11 @@ class VoterManager(models.Manager):
 class Base(models.Model):
     pub_date = models.DateTimeField(default=now, blank=True)
     text = models.CharField(max_length=10000, blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    def delete_user(self):
+        self.user = None
+        self.text = "Deleted"
 
     def get_age(self):
         current_time = datetime.datetime.utcnow().replace(tzinfo=utc)
@@ -99,7 +104,6 @@ class Forum(Base):
     slug = models.CharField(max_length=256, blank=True)
 
     title = models.CharField(max_length=200, blank=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     hashtag = models.CharField(max_length=2000, blank=True)
 
     score = models.ManyToManyField(Voter, blank=True)
@@ -144,6 +148,9 @@ class Forum(Base):
         else:
             return True
 
+    def delete_user(self):
+        self.user = None
+
     objects = models.Manager()
 
 
@@ -152,7 +159,6 @@ class Comment(MPTTModel, Base):
     path = models.CharField(max_length=10000, blank=True)
 
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     score = models.ManyToManyField(Voter, blank=True)
 
@@ -172,8 +178,3 @@ class Comment(MPTTModel, Base):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
-
-    def delete(self):
-        self.user = None
-        self.text = "Deleted"
-

@@ -522,7 +522,8 @@ body::-webkit-scrollbar {
   display: block;
 }
 
-.detail, .comment--section {
+.delete--button {
+  padding-left: .25rem;
 }
 
 .comment > p{
