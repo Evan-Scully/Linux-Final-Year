@@ -46,6 +46,7 @@
         <a role="button" class="clear--button delete--button" onclick="delete_forum()">
             <i class="uil uil-trash-alt"></i>
         </a>
+        <span class="error--message--forum"></span>
     </div>
     {% if error_message %}
         <p>
@@ -216,7 +217,7 @@ function delete_forum() {
             $('.main--title-information','#home').html("by [Deleted]")
             },
         error: function(result){
-            console.log();
+            $('.error--message--forum','#home').html(" [You must have created this forum to delete it]");
         }
     });
 }

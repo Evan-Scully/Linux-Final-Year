@@ -514,7 +514,7 @@ body::-webkit-scrollbar {
   margin: .25rem 0 .25rem 0;
 }
 
-.error--message{
+.error--message, .error--message--forum{
   color: darkred;
 }
 
