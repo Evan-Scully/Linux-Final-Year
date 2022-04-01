@@ -93,7 +93,7 @@ def forum_detail(request, forum_id):
             if forum_requested.user == user:
                 forum_requested.user = None
                 forum_requested.save()
-                return HttpResponse(status=204)
+                return HttpResponse(status=200)
             else:
                 return HttpResponse(status=403)
         except Exception as f:
@@ -187,7 +187,7 @@ def comment_detail(request, forum_id, comment_id):
                 current_comment.text = ""
                 current_comment.user = None
                 current_comment.save()
-                return HttpResponse(status=204)
+                return HttpResponse(status=200)
             else:
                 return HttpResponse(status=403)
         except Exception as f:
