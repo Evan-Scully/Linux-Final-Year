@@ -86,9 +86,18 @@ def forum_detail(request, forum_id):
         return render(request, 'Forum/detail.html', context)
 
     if request.method == "DELETE":
-        instance = Forum.objects.get(id=forum_id)
-        instance.delete()
-        return HttpResponse(status=204)
+        forum_requested = get_object_or_404(Forum, id=forum_id)
+        key = request.GET.get('biri_key', '')
+        try:
+            user = get_object_or_404(User, biri=key)
+            if forum_requested.user == user:
+                forum_requested.user = None
+                forum_requested.save()
+                return HttpResponse(status=204)
+            else:
+                return HttpResponse(status=403)
+        except Exception as f:
+            print(f)
 
 
 def forum_vote(request, forum_id):

@@ -11,7 +11,11 @@
         <h1>{{ forum.title }}</h1>
         <div class="main--title-information">
             <h5>{{ forum.get_age }}</h5>
-            <h5>by {{ forum.get_user.name }}</h5>
+            {% if forum.user != None %}
+                <h5>by {{ forum.get_user.name }}</h5>
+            {% else %}
+                <h5>by [Deleted]</h5>
+            {% endif %}
         </div>
         <p>{{ forum.hashtag }}</p>
     </div>
@@ -39,6 +43,9 @@
             <i class="uil uil-comments-alt"></i>
             <span id="comment-count">{{ forum.comment_set.count }}</span>
         </div>
+        <a role="button" class="clear--button" onclick="delete_forum()">
+            <i class="uil uil-trash-alt"></i>
+        </a>
     </div>
     {% if error_message %}
         <p>
@@ -190,8 +197,22 @@ function delete_comment(comment_id) {
             let comment = $('#comment--' + comment_id).parents('.comment');
             $('.user',comment).html("<h5>[Deleted]</h5>");
             $('.comment--text', comment).html("");
-            //$('#comment--' + comment_id + " :a").prop("disabled", true);
             $('.comment--vote', comment).children('a').prop("onclick", null).off("click");
+            },
+        error: function(result){
+            console.log();
+        }
+    });
+}
+
+function delete_forum() {
+    $.ajax({
+        url: {{ forum.id }} + "?biri_key=" + visitorId,
+        headers:{'X-CSRFToken':'{{ csrf_token }}'},
+        type: 'DELETE',
+        contentType: 'application/json',
+        success: function(result) {
+            $('.main--title-information','#home').html("by [Deleted]")
             },
         error: function(result){
             console.log();
