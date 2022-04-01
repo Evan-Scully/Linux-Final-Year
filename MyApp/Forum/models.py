@@ -15,7 +15,6 @@ import random
 class User(models.Model):
     name = models.CharField(max_length=24)
     biri = models.CharField(max_length=100)
-    random_name = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.name:
