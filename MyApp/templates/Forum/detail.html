@@ -201,7 +201,7 @@ function delete_comment(comment_id) {
 
             },
         error: function(result){
-            $('.error--message',comment).html("You must own this comment to delete it");
+            $('.error--message',comment).html(" [You must own this comment to delete it]");
         }
     });
 }

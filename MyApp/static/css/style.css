@@ -514,6 +514,10 @@ body::-webkit-scrollbar {
   margin: .25rem 0 .25rem 0;
 }
 
+.error--message{
+  color: darkred;
+}
+
 .parent {
   display: block;
 }
