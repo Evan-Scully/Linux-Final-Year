@@ -25,7 +25,7 @@ def forum(request):
         home = Point(-7.087, 53.052)
         dublin = Point(-6.27, 53.352)
 
-        all_forums = Forum.objects.filter(location__distance_lt=(college, Distance(km=radius)))[:10][::-1]
+        all_forums = Forum.objects.filter(location__distance_lt=(college, Distance(km=radius)))[:12][::1]
 
         # TODO remove hardcoded user hardware URI and get from POST method
         # user = User.objects.get(ip="9563bb103459709e3e48019b27e1f48a")

@@ -273,7 +273,8 @@ class ClientCommentTestCase(TestCase):
     def test_comment_vote_upvote(self):
         c = Client()
         data = urlencode({'type': 'up-vote', 'fingerprint': 123456})
-        response = c.post(reverse('Forum:comment_vote', args=[1, 1]), data, content_type="application/x-www-form-urlencoded")
+        response = c.post(reverse('Forum:comment_vote', args=[1, 1]), data,
+                          content_type="application/x-www-form-urlencoded")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(str(response.content, encoding='utf8'), '{"voter": -1}')
 
