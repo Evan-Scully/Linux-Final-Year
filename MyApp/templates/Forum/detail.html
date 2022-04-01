@@ -24,9 +24,9 @@
             <p style="cursor:pointer" onclick="embedVideo('{{ forum.embed_video }}')">{{ forum.embed_video }} [EMBED]</p>
         </div>
     {% endif %}
+    <p>{{ forum.text }}</p>
     <div id="embed_video" hidden>
     </div>
-    <p>{{ forum.text }}</p>
     <div class="main--title">
         <div class="forum--vote enlarge--text">
             <a role="button" title="upvote" class="clear--button" onclick="vote(this, {{ forum.id }})">
