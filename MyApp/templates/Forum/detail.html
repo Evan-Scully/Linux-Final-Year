@@ -188,20 +188,20 @@ function comment_vote(type, comment_id) {
 
 
 function delete_comment(comment_id) {
+    let comment = $('#comment--' + comment_id).parents('.comment');
     $.ajax({
         url: {{ forum.id }}  + "/" + comment_id + "?biri_key=" + visitorId,
         headers:{'X-CSRFToken':'{{ csrf_token }}'},
         type: 'DELETE',
         contentType: 'application/json',
         success: function(result) {
-            let comment = $('#comment--' + comment_id).parents('.comment');
             $('.user',comment).html("<h5>[Deleted]</h5>");
             $('.comment--text', comment).html("");
             $('.comment--vote', comment).children('a').prop("onclick", null).off("click");
-            $('.error--message',comment).html("You must own this comment to delete it");
+
             },
         error: function(result){
-            console.log();
+            $('.error--message',comment).html("You must own this comment to delete it");
         }
     });
 }
