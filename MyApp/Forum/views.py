@@ -171,7 +171,21 @@ def comment_detail(request, forum_id, comment_id):
 
     if request.method == "DELETE":
         current_comment = Comment.objects.get(id=comment_id)
-        current_comment.delete()
+        key = request.GET.get('biri_key', '')
+        try:
+            user = get_object_or_404(User, biri=key)
+            if current_comment.user == user:
+                current_comment.text = ""
+                current_comment.user = None
+                current_comment.save()
+                return HttpResponse(status=204)
+            else:
+                return HttpResponse(status=403)
+        except Exception as f:
+            print(f)
+
+    if request.method == "PUT":
+        current_comment = Comment.objects.get(id=comment_id)
         return HttpResponse(status=204)
 
 

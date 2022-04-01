@@ -156,25 +156,53 @@ function vote(type) {
     });
 }
 
-function comment_vote(type, id) {
+function comment_vote(type, comment_id) {
     let vote = $(type).attr("title");
 
     $.ajax({
-        url: {{ forum.id }} + "/" + id + "/vote",
+        url: {{ forum.id }} + "/" + comment_id + "/vote",
         data: { 'csrfmiddlewaretoken' : '{{ csrf_token }}', vote: vote, fingerprint: visitorId},
         type: 'POST',
         success: function (data) {
             change_class_vote(type, '.comment--vote', data);
 
-            fetch({{ forum.id }} + "/" + id + "/vote", {
+            fetch({{ forum.id }} + "/" + comment_id + "/vote", {
                 method: "GET",
                 })
                 .then(response => response.json())
                 .then(data => {
-                    $("#comment_score_" + id).html(data['score'] + " score");
+                    $("#comment_score_" + comment_id).html(data['score'] + " score");
                 })},
         error: function() {
             console.log('vote failure')
+        }
+    });
+}
+
+
+function delete_comment(comment_id) {
+
+    $.ajax({
+        url: {{ forum.id }}  + "/" + comment_id + "?biri_key=" + visitorId,
+        headers:{'X-CSRFToken':'{{ csrf_token }}'},
+        type: 'DELETE',
+        contentType: 'application/json',
+        success: function(result) {
+            //let comment = $('#comment--' + comment_id).parents();
+            let comment = $('#comment--' + comment_id).parents('div');
+
+            let dic = comment.prev('.comment--user--info');
+            dic.html("<h5>[Deleted]</h5>");
+
+            fetch({{ forum.id }} + "/" + comment_id, {
+                method: "GET",
+                })
+                .then(response => response.json())
+                .then(data => {
+
+                })},
+        error: function(result){
+
         }
     });
 }
