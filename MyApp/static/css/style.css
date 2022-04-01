@@ -473,7 +473,7 @@ body::-webkit-scrollbar {
 .forum--title {
   overflow: hidden;
   padding: .5rem 0 .25rem 0;
-  max-height: 30px;
+  max-height: 60px;
 }
 
 .forum--summary {
