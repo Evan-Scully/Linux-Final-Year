@@ -198,6 +198,7 @@ function delete_comment(comment_id) {
             $('.user',comment).html("<h5>[Deleted]</h5>");
             $('.comment--text', comment).html("");
             $('.comment--vote', comment).children('a').prop("onclick", null).off("click");
+            $('.error--message',comment).html("You must own this comment to delete it");
             },
         error: function(result){
             console.log();

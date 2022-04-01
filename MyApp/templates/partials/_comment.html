@@ -30,6 +30,7 @@
                     <a role="button" class="clear--button" onclick="delete_comment({{ comment.id }})">
                         <i class="uil uil-trash-alt"></i>
                     </a>
+                    <span class="error--message"></span>
                     <form id="reply{{ comment.id }}" action="" onsubmit="post_reply(this); return false" method="post" enctype="multipart/form-data" class="hide_form" novalidate>
                         {% csrf_token %}
                         <input type="hidden" name="parent" value="{{ comment.id }}">
